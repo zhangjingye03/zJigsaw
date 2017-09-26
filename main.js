@@ -1,5 +1,6 @@
 bound = 3;
 element = bound * bound;
+frameGap = 5;
 a = [];
 imgs = ["1.jpg", "2.jpg", "3.jpg"];
 perWH = 0; designated = 0; firstLoad = 2;
@@ -29,7 +30,7 @@ window.onresize = function() {
 				        "color": "#776e65",
                 "height": sch * 0.067 + "px"
               });
-  perWH = (parseFloat($("#all").css("height")) - (bound + 1) * 5) / bound;
+  perWH = (parseFloat($("#all").css("height")) - (bound + 1) * frameGap) / bound;
   $(".block").css({ "width": perWH + "px",
                     "height": perWH + "px"
                   });
@@ -45,7 +46,7 @@ window.onresize = function() {
 
 window.onload = function() {
   window.onresize();
-  perWH = (parseFloat($("#all").css("height")) - (bound + 1) * 5) / bound;
+  perWH = (parseFloat($("#all").css("height")) - (bound + 1) * frameGap) / bound;
   designated = genRandomNum();
   img = imgs[parseInt(Math.random() * imgs.length)];
   // initialize the 2d array
@@ -89,6 +90,13 @@ window.onload = function() {
     t.onresize = blockResize; // not a standard function
     $("#all").append(t);
   }
+  // create win tip
+  t = document.createElement("div");
+  t.id = "win";
+  t.style.left = t.style.right = t.style.top = t.style.bottom = frameGap;
+  t.style.backgroundImage = "url(" + img + ")";
+  $("#all").append(t);
+  $("#loading").remove();
 };
 
 function blockResize() {
@@ -106,11 +114,11 @@ function getY(i) {
 }
 
 function getLeft(x) {
-  return perWH * x + 5 * (x + 1);
+  return perWH * x + frameGap * (x + 1);
 }
 
 function getTop(y) {
-  return perWH * y + 5 * (y + 1);
+  return perWH * y + frameGap * (y + 1);
 }
 
 function genRandomColor() {
@@ -133,13 +141,29 @@ function swap(f, l) {
   return [(t) ? l[0] : f[0], (t) ? l[1] : f[1]];
 }
 
+function succeed() {
+  counter = 0; var x, y;
+  for (y = 0; y < bound; y++) {
+    for (x = 0; x < bound; x++) {
+      if (++counter != a[y][x]) return 0;
+    }
+  }
+  return 1;
+}
+
 function move() {
-//  if (animating) return 1;
   y = this.y; x = this.x;
 
   if (!a[y][x]) {
     // non-exist
     return 2;
+  }
+
+  // if succeed
+  if (succeed()) {
+    //TODO
+    $(".block").css("opacity", 0);
+
   }
 
   res = [];

@@ -67,6 +67,20 @@ h5 {
   background-color: inherit;
 }
 
+#win {
+  border-radius: 6px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0;
+  position: absolute;
+}
+
+#loading {
+    padding-top: 48%;
+    padding-bottom: 48%;
+    font-size: 18pt;
+}
+
 #restart {
   left: 20%;
   right: 62%;
