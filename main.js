@@ -1,7 +1,7 @@
 bound = 3;
 element = bound * bound;
 a = [];
-animating = false;
+imgs = ["1.jpg", "2.jpg", "3.jpg"];
 perWH = 0; designated = 0; firstLoad = 2;
 
 window.onresize = function() {
@@ -47,6 +47,7 @@ window.onload = function() {
   window.onresize();
   perWH = (parseFloat($("#all").css("height")) - (bound + 1) * 5) / bound;
   designated = genRandomNum();
+  img = imgs[parseInt(Math.random() * imgs.length)];
   // initialize the 2d array
   for (i = 0; i < bound; i++) {
     a[i] = [];
@@ -54,7 +55,7 @@ window.onload = function() {
   // initialize the elements
   h = []; // tmp array for checking existence
   for (i = 0; i < element; i++) {
-    // i: element id  n: random number
+    // i: ith img num  n: random number (nth image piece)
     // generate a random num
     n = genRandomNum();
     while (h[n]) {
@@ -73,6 +74,7 @@ window.onload = function() {
                   "px; sbpadding-top:" + perWH / 4 + "'>" + (n + 1) + "</center>";
     t.style.position = "absolute";
     t.style.width = t.style.height = perWH + "px";
+    t.style.backgroundSize = bound + "00%";
     t.style.backgroundColor = "rgb(" + genRandomColor() + ", " + genRandomColor() + ", " + genRandomColor() + ")";
     y = getY(i); x = getX(i);
     t.y = y; t.x = x;
@@ -80,7 +82,9 @@ window.onload = function() {
     // console.log("i = " + i + ", x = " + x + ", y = " + y);
     t.style.left = getLeft(x) + "px";
     t.style.top =  getTop(y) + "px";
-    t.style.backgroundImage = "url(images/" + (n + 1) + ".jpg)";
+    t.style.backgroundPositionX = 100 / (bound - 1) * getX(n) + "%";
+    t.style.backgroundPositionY = 100 / (bound - 1) * getY(n) + "%";
+    t.style.backgroundImage = "url(" + img + ")";
     t.onclick = move;
     t.onresize = blockResize; // not a standard function
     $("#all").append(t);

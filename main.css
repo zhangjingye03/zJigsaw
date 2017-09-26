@@ -56,7 +56,7 @@ h5 {
 .block {
   border-radius: 6px;
   background-repeat: no-repeat;
-  background-size: cover;
+  /* background-size: cover; */
   display: table;
 }
 
