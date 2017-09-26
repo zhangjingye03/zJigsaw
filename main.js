@@ -29,7 +29,7 @@ window.onresize = function() {
 				        "color": "#776e65",
                 "height": sch * 0.067 + "px"
               });
-  perWH = (parseFloat($("#all").css("height")) - (bound + 1) * 10) / bound;
+  perWH = (parseFloat($("#all").css("height")) - (bound + 1) * 5) / bound;
   $(".block").css({ "width": perWH + "px",
                     "height": perWH + "px"
                   });
@@ -45,7 +45,7 @@ window.onresize = function() {
 
 window.onload = function() {
   window.onresize();
-  perWH = (parseFloat($("#all").css("height")) - (bound + 1) * 10) / bound;
+  perWH = (parseFloat($("#all").css("height")) - (bound + 1) * 5) / bound;
   designated = parseInt(Math.random() * element);
   // initialize the 2d array
   for (i = 0; i < bound; i++) {
@@ -71,8 +71,9 @@ window.onload = function() {
     // console.log("i = " + i + ", x = " + x + ", y = " + y);
     t.style.left = getLeft(x) + "px";
     t.style.top =  getTop(y) + "px";
+    t.style.backgroundImage = "url(images/" + (i + 1) + ".jpg)";
     t.onclick = move;
-    t.onresize = blockResize;
+    t.onresize = blockResize; // not a standard function
     $("#all").append(t);
   }
 };
@@ -92,11 +93,11 @@ function getY(i) {
 }
 
 function getLeft(x) {
-  return perWH * x + 10 * (x + 1);
+  return perWH * x + 5 * (x + 1);
 }
 
 function getTop(y) {
-  return perWH * y + 10 * (y + 1);
+  return perWH * y + 5 * (y + 1);
 }
 
 function genRandomColor() {

@@ -1,5 +1,5 @@
 * {
-  transition: all 0.1s;
+  transition: all 0.2s;
 }
 
 body {
@@ -55,6 +55,12 @@ h5 {
 
 .block {
   border-radius: 6px;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.nums {
+  opacity: 0;
 }
 
 #restart {
