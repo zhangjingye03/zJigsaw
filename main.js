@@ -8,8 +8,8 @@ window.onresize = function() {
   sch = document.body.clientHeight;
   scw = document.body.clientWidth;
   if (scw <= 400) {
-    $("#all").css("height", "").css("width", "");
-    $("#all").css("left", "5%").css("right", "5%").css("width", "90vw");
+    $("#all").css("height", "").css("width", "90vw");
+    // $("#all").css("left", "5%").css("right", "5%").css("width", "90vw");
   } else {
     $("#all").css("left", "").css("right", "");
     if (scw > sch) {
@@ -22,9 +22,9 @@ window.onresize = function() {
     $("#all").css("width", $("#all").css("height"));
   }
 
-  $("center").css({ "font-size": sch * 0.65 * 0.225 * 0.5,
+  /*$("center").css({ "font-size": sch * 0.65 * 0.225 * 0.5,
                     "padding-top": sch * 0.65 * 0.225 * 0.25
-                  });
+                  });*/
 	$("h1").css({ "font-size": sch * 0.1 + "px",
 				        "color": "#776e65",
                 "height": sch * 0.067 + "px"
@@ -46,32 +46,41 @@ window.onresize = function() {
 window.onload = function() {
   window.onresize();
   perWH = (parseFloat($("#all").css("height")) - (bound + 1) * 5) / bound;
-  designated = parseInt(Math.random() * element);
+  designated = genRandomNum();
   // initialize the 2d array
   for (i = 0; i < bound; i++) {
     a[i] = [];
   }
   // initialize the elements
+  h = []; // tmp array for checking existence
   for (i = 0; i < element; i++) {
-    if (designated == i) {
+    // i: element id  n: random number
+    // generate a random num
+    n = genRandomNum();
+    while (h[n]) {
+      n = genRandomNum();
+    }
+    h[n] = 1;
+    console.log(h.toString());
+    if (designated == n) {
       a[getY(i)][getX(i)] = "";
       continue;
     }
     t = document.createElement("div");
-    t.id = "b" + (i + 1);
+    t.id = "b" + (n + 1);
     t.className = "block";
-    t.innerHTML = "<center class='nums' style='color:white; font-size:" + perWH / 2 +
-                  "px; padding-top:" + perWH / 4 + "'>" + (i + 1) + "</center>";
+    t.innerHTML = "<center class='nums' style='color:white; opacity: 0; font-size:" + perWH / 2 +
+                  "px; sbpadding-top:" + perWH / 4 + "'>" + (n + 1) + "</center>";
     t.style.position = "absolute";
     t.style.width = t.style.height = perWH + "px";
     t.style.backgroundColor = "rgb(" + genRandomColor() + ", " + genRandomColor() + ", " + genRandomColor() + ")";
     y = getY(i); x = getX(i);
     t.y = y; t.x = x;
-    a[y][x] = i + 1;
+    a[y][x] = n + 1;
     // console.log("i = " + i + ", x = " + x + ", y = " + y);
     t.style.left = getLeft(x) + "px";
     t.style.top =  getTop(y) + "px";
-    t.style.backgroundImage = "url(images/" + (i + 1) + ".jpg)";
+    t.style.backgroundImage = "url(images/" + (n + 1) + ".jpg)";
     t.onclick = move;
     t.onresize = blockResize; // not a standard function
     $("#all").append(t);
@@ -102,6 +111,10 @@ function getTop(y) {
 
 function genRandomColor() {
   return parseInt(Math.random() * 255);
+}
+
+function genRandomNum() {
+  return parseInt(Math.random() * element);
 }
 
 function swap(f, l) {
@@ -152,4 +165,13 @@ function printA() {
     console.info(tmp);
   }
   console.info("======");
+}
+
+function showHint() {
+  $(".nums").css("opacity", 1);
+  setTimeout(hideHint, 3000);
+}
+
+function hideHint() {
+  $(".nums").css("opacity", 0);
 }

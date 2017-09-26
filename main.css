@@ -27,7 +27,7 @@ h5 {
 }
 
 #all {
-  position: sticky;
+  position: relative;
   border-radius: 6px;
   background-color: rgb(187,173,160);
   height: 65%;
@@ -36,8 +36,8 @@ h5 {
 
 @media (max-width: 400px) {
   #all {
-      left: 5%;
-      right: 5%;
+    /*  left: 5%;
+      right: 5%; */
       height: 90vw;
   }
 }
@@ -50,17 +50,21 @@ h5 {
 }
 
 .inline {
-   display:inline
+   display:inline;
 }
 
 .block {
   border-radius: 6px;
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
+  display: table;
 }
 
 .nums {
-  opacity: 0;
+  transition: opacity 3s;
+  display: table-cell;
+  vertical-align: middle;
+  background-color: inherit;
 }
 
 #restart {
