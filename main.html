@@ -1,0 +1,27 @@
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <title>zJigsaw</title>
+  </head>
+
+  <body scroll="no">
+    <div id='fuckclass' class="game"></div>
+    <h1>zJigsaw</h1>
+    <h5>Move the fragment to get a complete image!</h5>
+    <br>
+    <div id='all'></div>
+    <h4>Time spent : +1s</h4>
+    <div>
+      <div id='hint' class="button inline" onclick='game_hint()' ontouchend='game_hint()'>&nbsp;Hint&nbsp;</div>
+      <div id='answer' class="button inline" onclick='game_answer()' ontouchend='game_answer()'>&nbsp;Answer&nbsp;</div>
+      <div id='restart' class="button inline" onclick='game_restart()' ontouchend='game_restart()'>&nbsp;Retry&nbsp;</div>
+    </div>
+  </body>
+
+  <link rel="stylesheet" href="main.css" type="text/css" />
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+  <script src="main.js"></script>
+
+</html>
