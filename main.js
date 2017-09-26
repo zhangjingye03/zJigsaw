@@ -53,16 +53,25 @@ window.onload = function() {
   for (i = 0; i < bound; i++) {
     a[i] = [];
   }
+  // generate random nums
+  rn = []; // array for random nums
+  while (getiSeq(rn) % 2 != 0) {
+    h = []; // tmp array for checking existence
+    console.log(getiSeq(rn));
+    for (i = 0; i < element; i++) {
+      n = genRandomNum();
+      while (h[n]) {
+        n = genRandomNum();
+      }
+      h[n] = 1; rn[i] = n;
+    }
+  }
+
   // initialize the elements
-  h = []; // tmp array for checking existence
+
   for (i = 0; i < element; i++) {
     // i: ith img num  n: random number (nth image piece)
-    // generate a random num
-    n = genRandomNum();
-    while (h[n]) {
-      n = genRandomNum();
-    }
-    h[n] = 1;
+    n = rn[i];
     console.log(h.toString());
     if (designated == n) {
       a[getY(i)][getX(i)] = "";
@@ -98,6 +107,17 @@ window.onload = function() {
   $("#all").append(t);
   $("#loading").remove();
 };
+
+function getiSeq(seq) {
+  if (seq.length == 0) return -1;
+  total = 0; var i, j;
+  for (i = 0; i < seq.length; i++) {
+    for (j = 0; j < i; j++) {
+      if (seq[j] > seq[i]) total += 1;
+    }
+  }
+  return total;
+}
 
 function blockResize() {
   this.style.width = this.style.height = perWH + "px";
@@ -145,7 +165,7 @@ function succeed() {
   counter = 0; var x, y;
   for (y = 0; y < bound; y++) {
     for (x = 0; x < bound; x++) {
-      if (++counter != a[y][x]) return 0;
+      if (++counter != a[y][x] && a[y][x] != "") return 0;
     }
   }
   return 1;

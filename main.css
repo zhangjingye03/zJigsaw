@@ -73,6 +73,7 @@ h5 {
   background-size: cover;
   opacity: 0;
   position: absolute;
+  display: none;
 }
 
 #loading {
