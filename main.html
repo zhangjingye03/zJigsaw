@@ -14,10 +14,10 @@
     <div id='all'>
       <p id="loading">Initializing...</p>
     </div>
-    <h4>Time spent : +1s</h4>
+    <h4>Time spent : <span id="timeCounter">0</span>s</h4>
     <div>
       <div id='hint' class="button inline" onclick='showHint();' ontouchend='showHint()'>&nbsp;Hint&nbsp;</div>
-      <div id='answer' class="button inline" onclick='game_answer()' ontouchend='game_answer()'>&nbsp;Answer&nbsp;</div>
+      <div id='answer' class="button inline" onclick='showOrig();' ontouchend='game_answer()'>&nbsp;Original&nbsp;</div>
       <div id='restart' class="button inline" onclick='game_restart()' ontouchend='game_restart()'>&nbsp;Retry&nbsp;</div>
     </div>
   </body>

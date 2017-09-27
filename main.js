@@ -3,7 +3,8 @@ element = bound * bound;
 frameGap = 5;
 a = [];
 imgs = ["1.jpg", "2.jpg", "3.jpg"];
-perWH = 0; designated = 0; firstLoad = 2;
+perWH = 0; designated = 0; blockInited = false; gaming = false;
+tid = 0; time = 3;
 
 window.onresize = function() {
   sch = document.body.clientHeight;
@@ -27,7 +28,6 @@ window.onresize = function() {
                     "padding-top": sch * 0.65 * 0.225 * 0.25
                   });*/
 	$("h1").css({ "font-size": sch * 0.1 + "px",
-				        "color": "#776e65",
                 "height": sch * 0.067 + "px"
               });
   perWH = (parseFloat($("#all").css("height")) - (bound + 1) * frameGap) / bound;
@@ -35,9 +35,7 @@ window.onresize = function() {
                     "height": perWH + "px"
                   });
   setTimeout(window.onresize, 500);
-  if (--firstLoad > 0) {
-    /*$("*").css({ "transition": "all 0.2s" });*/ return 0;
-  }
+  if (!blockInited) return 0;
   for (i = 0; i < element; i++) {
     if (designated == i) continue;
     $("#b" + (i + 1))[0].onresize();
@@ -66,47 +64,71 @@ window.onload = function() {
       h[n] = 1; rn[i] = n;
     }
   }
-
-  // initialize the elements
-
-  for (i = 0; i < element; i++) {
-    // i: ith img num  n: random number (nth image piece)
-    n = rn[i];
-    console.log(h.toString());
-    if (designated == n) {
-      a[getY(i)][getX(i)] = "";
-      continue;
-    }
-    t = document.createElement("div");
-    t.id = "b" + (n + 1);
-    t.className = "block";
-    t.innerHTML = "<center class='nums' style='color:white; opacity: 0; font-size:" + perWH / 2 +
-                  "px; sbpadding-top:" + perWH / 4 + "'>" + (n + 1) + "</center>";
-    t.style.position = "absolute";
-    t.style.width = t.style.height = perWH + "px";
-    t.style.backgroundSize = bound + "00%";
-    t.style.backgroundColor = "rgb(" + genRandomColor() + ", " + genRandomColor() + ", " + genRandomColor() + ")";
-    y = getY(i); x = getX(i);
-    t.y = y; t.x = x;
-    a[y][x] = n + 1;
-    // console.log("i = " + i + ", x = " + x + ", y = " + y);
-    t.style.left = getLeft(x) + "px";
-    t.style.top =  getTop(y) + "px";
-    t.style.backgroundPositionX = 100 / (bound - 1) * getX(n) + "%";
-    t.style.backgroundPositionY = 100 / (bound - 1) * getY(n) + "%";
-    t.style.backgroundImage = "url(" + img + ")";
-    t.onclick = move;
-    t.onresize = blockResize; // not a standard function
-    $("#all").append(t);
-  }
   // create win tip
   t = document.createElement("div");
   t.id = "win";
   t.style.left = t.style.right = t.style.top = t.style.bottom = frameGap;
   t.style.backgroundImage = "url(" + img + ")";
+  t.innerHTML = "<h1 id='msg' style='color: rgb(250,248,239); padding-top: 25%'></h1>";
   $("#all").append(t);
   $("#loading").remove();
+  setTimeout(preStart, 4000);
+  tid = setInterval(timer, 1000);
 };
+
+function preStart() {
+  $("#win").css("opacity", 0);
+  setTimeout(function() { $("#win").css("z-index", "25"); $("#msg").html("Hurry!"); }, 4000);
+  initBlocks();
+}
+
+function timer() {
+  if (!gaming) {
+    if (time == 0) {
+      $("#msg").html("Start!");
+      gaming = true; return 0;
+    }
+    $("#msg").html(time--);
+  } else {
+    $("#timeCounter").html(time++);
+  }
+}
+
+function initBlocks() {
+    for (i = 0; i < element; i++) {
+      // i: ith img num  n: random number (nth image piece)
+      n = rn[i];
+      console.log(h.toString());
+      if (designated == n) {
+        a[getY(i)][getX(i)] = "";
+        continue;
+      }
+      t = document.createElement("div");
+      t.id = "b" + (n + 1);
+      t.className = "block";
+      t.innerHTML = "<center class='nums' style='color:white; opacity: 0; font-size:" + perWH / 2 +
+                    "px; sbpadding-top:" + perWH / 4 + "'>" + (n + 1) + "</center>";
+      t.style.position = "absolute";
+      t.style.width = t.style.height = perWH + "px";
+      t.style.backgroundSize = bound + "00%";
+      t.style.backgroundColor = "rgb(" + genRandomColor() + ", " + genRandomColor() + ", " + genRandomColor() + ")";
+      y = getY(i); x = getX(i);
+      t.y = y; t.x = x;
+      a[y][x] = n + 1;
+      // console.log("i = " + i + ", x = " + x + ", y = " + y);
+      t.style.left = getLeft(x) + "px";
+      t.style.top =  getTop(y) + "px";
+      t.style.backgroundPositionX = 100 / (bound - 1) * getX(n) + "%";
+      t.style.backgroundPositionY = 100 / (bound - 1) * getY(n) + "%";
+      t.style.backgroundImage = "url(" + img + ")";
+      t.onclick = move;
+      // ontouchend cannot be added directly...
+      t.addEventListener("touchend", move);
+      t.onresize = blockResize; // not a standard function
+      $("#all").append(t);
+    }
+    blockInited = true;
+}
 
 function getiSeq(seq) {
   if (seq.length == 0) return -1;
@@ -179,13 +201,6 @@ function move() {
     return 2;
   }
 
-  // if succeed
-  if (succeed()) {
-    //TODO
-    $(".block").css("opacity", 0);
-
-  }
-
   res = [];
   if (x > 0 && !a[y][x - 1]) {
     res = swap([y, x - 1], [y, x]); // left
@@ -202,6 +217,13 @@ function move() {
   console.log(res);
   this.y = res[0]; this.x = res[1];
   printA();
+
+  // if succeed
+  if (succeed()) {
+    $(".block").css("opacity", 0);
+    $("#win").css("z-index", "200").css("opacity", 1);
+    $("#msg").html("You Win!");
+  }
 }
 
 function printA() {
@@ -217,9 +239,17 @@ function printA() {
 
 function showHint() {
   $(".nums").css("opacity", 1);
-  setTimeout(hideHint, 3000);
+  setTimeout(function() {
+     $(".nums").css("opacity", 0);
+  }, 3000);
 }
 
-function hideHint() {
-  $(".nums").css("opacity", 0);
+function showOrig() {
+  $("#win").css("z-index", "200").css("opacity", 1);
+  setTimeout(function() {
+    $("#win").css("opacity", 0);
+    setTimeout(function() {
+      $("#win").css("z-index", 25);
+    }, 4000);
+  }, 4000);
 }
