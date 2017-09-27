@@ -2,8 +2,8 @@ bound = 3;
 element = bound * bound;
 frameGap = 5;
 a = [];
-imgs = ["1.jpg", "2.jpg", "3.jpg"];
-perWH = 0; designated = 0; blockInited = false; gaming = false;
+imgs = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"];
+perWH = 0; designated = 9 - 1; blockInited = false; gaming = false;
 tid = 0; time = 3;
 
 window.onresize = function() {
@@ -45,7 +45,7 @@ window.onresize = function() {
 window.onload = function() {
   window.onresize();
   perWH = (parseFloat($("#all").css("height")) - (bound + 1) * frameGap) / bound;
-  designated = genRandomNum();
+  // designated = genRandomNum();
   img = imgs[parseInt(Math.random() * imgs.length)];
   // initialize the 2d array
   for (i = 0; i < bound; i++) {
@@ -58,6 +58,7 @@ window.onload = function() {
     console.log(getiSeq(rn));
     for (i = 0; i < element; i++) {
       n = genRandomNum();
+      console.log(h.toString());
       while (h[n]) {
         n = genRandomNum();
       }
@@ -98,7 +99,6 @@ function initBlocks() {
     for (i = 0; i < element; i++) {
       // i: ith img num  n: random number (nth image piece)
       n = rn[i];
-      console.log(h.toString());
       if (designated == n) {
         a[getY(i)][getX(i)] = "";
         continue;
@@ -134,6 +134,9 @@ function getiSeq(seq) {
   if (seq.length == 0) return -1;
   total = 0; var i, j;
   for (i = 0; i < seq.length; i++) {
+    // "x" is ignored.
+    if (designated == seq[i]) continue;
+
     for (j = 0; j < i; j++) {
       if (seq[j] > seq[i]) total += 1;
     }
@@ -222,6 +225,7 @@ function move() {
   if (succeed()) {
     $(".block").css("opacity", 0);
     $("#win").css("z-index", "200").css("opacity", 1);
+    window.clearInterval(tid);
     $("#msg").html("You Win!");
   }
 }
@@ -252,4 +256,13 @@ function showOrig() {
       $("#win").css("z-index", 25);
     }, 4000);
   }, 4000);
+}
+
+function restart() {
+  if (confirm("Are you sure to restart?")) {
+    gaming = false; blockInited = false; time = 3;
+    $(".block").remove(); $("#win").remove();
+    window.clearInterval(tid);
+    window.onload();
+  }
 }
