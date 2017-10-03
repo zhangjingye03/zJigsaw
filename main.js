@@ -45,6 +45,7 @@ window.onresize = function() {
 };
 
 window.onload = function() {
+  $(document).bind('touchmove', function(e) { e.preventDefault(); }); // disable safari scroll bounce
   if (localStorage.bound) bound = localStorage.bound - 0;
   element = bound * bound; designated = element - 1;
   window.onresize();

@@ -3,9 +3,6 @@
 }
 
 body {
-  /* safari fucking bounce */
-  height: 100%;
-  width: 100%;
   text-align: center;
   background-color: rgb(250,248,239);
   font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
