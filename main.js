@@ -1,9 +1,9 @@
 bound = 3;
-element = bound * bound;
+element = bound * bound; designated = element - 1;
 frameGap = 5;
 a = [];
 imgs = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"];
-perWH = 0; designated = 9 - 1; blockInited = false; gaming = false;
+perWH = 0; blockInited = false; gaming = false;
 tid = 0; time = 3;
 
 window.onresize = function() {
@@ -43,6 +43,7 @@ window.onresize = function() {
 };
 
 window.onload = function() {
+  element = bound * bound; designated = element - 1;
   window.onresize();
   perWH = (parseFloat($("#all").css("height")) - (bound + 1) * frameGap) / bound;
   // designated = genRandomNum();
@@ -75,6 +76,21 @@ window.onload = function() {
   $("#loading").remove();
   setTimeout(preStart, 4000);
   tid = setInterval(timer, 1000);
+};
+
+document.body.onkeyup = function(e) {
+  if (!gaming) return;
+  var y = findNullBlock()[0], x = findNullBlock()[1];
+  switch (e.keyCode) {
+    case 38: // up
+      if (y != bound - 1) move(getId(y + 1, x)); break;
+    case 37: // left
+      if (x != bound - 1) move(getId(y, x + 1)); break;
+    case 40: // down
+      if (y != 0) move(getId(y - 1, x)); break;
+    case 39: // right
+      if (x != 0) move(getId(y, x - 1));
+    }
 };
 
 function preStart() {
@@ -174,6 +190,23 @@ function genRandomNum() {
   return parseInt(Math.random() * element);
 }
 
+function findNullBlock() {
+  var x, y;
+  for (y = 0; y < bound; y++) {
+    for (x = 0; x < bound; x++) {
+      if (!a[y][x]) return [y, x];
+    }
+  }
+}
+
+function getI(y, x) {
+  return a[y][x];
+}
+
+function getId(y, x) {
+  return $("#b" + a[y][x])[0];
+}
+
 function swap(f, l) {
   t = a[f[0]][f[1]];
   a[f[0]][f[1]] = a[l[0]][l[1]];
@@ -196,8 +229,12 @@ function succeed() {
   return 1;
 }
 
-function move() {
-  y = this.y; x = this.x;
+function move(what) {
+  if (what.id) { // not a event..
+    y = what.y; x = what.x;
+  } else {
+    y = this.y; x = this.x;
+  }
 
   if (!a[y][x]) {
     // non-exist
@@ -218,7 +255,11 @@ function move() {
     return 3;
   }
   console.log(res);
-  this.y = res[0]; this.x = res[1];
+  if (what.id) { // not a event..
+    what.y = res[0]; what.x = res[1];
+  } else {
+    this.y = res[0]; this.x = res[1];
+  }
   printA();
 
   // if succeed
