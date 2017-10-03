@@ -1,16 +1,16 @@
 bound = 3;
 element = bound * bound; designated = element - 1;
 frameGap = 5;
-a = [];
+a = []; rn = [];
 imgs = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"];
-perWH = 0; blockInited = false; gaming = false;
-tid = 0; time = 3;
-sch = scw = osch = oscw = 0;
+perWH = 0; blockInited = false; gaming = false; fullInited = false;
+tid = 0; time = 3; step = 0;
+sch = scw = 0;
+lastmove = 0;
 
 window.onresize = function() {
-  if (sch == osch && scw == oscw && oscw != 0) return;
-  osch = sch; sch = document.body.clientHeight;
-  oscw = scw; scw = document.body.clientWidth;
+  sch = document.body.clientHeight;
+  scw = document.body.clientWidth;
   if (scw <= 400) {
     $("#all").css("height", "").css("width", "90vw");
     // $("#all").css("left", "5%").css("right", "5%").css("width", "90vw");
@@ -32,7 +32,7 @@ window.onresize = function() {
 	$("h1").css({ "font-size": sch * 0.1 + "px",
                 "height": sch * 0.067 + "px"
               });
-  perWH = (parseFloat($("#all").css("height")) - (bound + 1) * frameGap) / bound;
+  perWH = (parseFloat($("#all").css("height")) - (bound - 0 + 1) * frameGap) / bound;
   $(".block").css({ "width": perWH + "px",
                     "height": perWH + "px"
                   });
@@ -45,37 +45,51 @@ window.onresize = function() {
 };
 
 window.onload = function() {
+  if (localStorage.bound) bound = localStorage.bound - 0;
   element = bound * bound; designated = element - 1;
   window.onresize();
-  perWH = (parseFloat($("#all").css("height")) - (bound + 1) * frameGap) / bound;
+  perWH = (parseFloat($("#all").css("height")) - (bound - 0 + 1) * frameGap) / bound;
   // designated = genRandomNum();
-  img = imgs[parseInt(Math.random() * imgs.length)];
-  // initialize the 2d array
-  for (i = 0; i < bound; i++) {
-    a[i] = [];
+  if (localStorage.img) img = localStorage.img; else {
+    img = imgs[parseInt(Math.random() * imgs.length)];
   }
+
   // generate random nums
   rn = []; // array for random nums
-  /*
-    设两个矩阵A和B。将矩阵从左到右，从上到下排成一个一维数组，设其逆序对的个数加上空白格在原矩阵所在的行列号之和P。
-    若P(A)与P(B)的奇偶性相同，则两个矩阵可以通过拼图游戏进行转换。因此只要计算当前矩阵和正确矩阵的P值判断一下即可。
-    --- from `http://blog.csdn.net/realmagician/article/details/17395035`
-  */
-  e0 = (bound - 1) * 2; // the designated element's col & rol id
-  var x = 0, y = 0;
-  while ((getiSeq(rn) + x + y) % 2 != e0 % 2 ) {
-    h = []; // tmp array for checking existence
-    //console.log(getiSeq(rn));
-    for (i = 0; i < element; i++) {
-      n = genRandomNum();
-      console.log(h.toString());
-      while (h[n]) {
-        n = genRandomNum();
+
+  if (localStorage.a) {
+    a = JSON.parse(localStorage.a);
+    for (var y = 0; y < bound; y++) {
+      for (var x = 0; x < bound; x++) {
+        rn[bound * y + x] = ((a[y][x]) ? a[y][x] : element) - 1; // lost that block == designated == element - 1
       }
-      h[n] = 1; rn[i] = n;
-      if (n == designated) {
-        y = parseInt(i / bound);
-        x = i - y * bound;
+    }
+  } else {
+    // initialize the 2d array
+    for (i = 0; i < bound; i++) {
+      a[i] = [];
+    }
+    /*
+      设两个矩阵A和B。将矩阵从左到右，从上到下排成一个一维数组，设其逆序对的个数加上空白格在原矩阵所在的行列号之和P。
+      若P(A)与P(B)的奇偶性相同，则两个矩阵可以通过拼图游戏进行转换。因此只要计算当前矩阵和正确矩阵的P值判断一下即可。
+      --- from `http://blog.csdn.net/realmagician/article/details/17395035`
+    */
+    e0 = (bound - 1) * 2; // the designated element's col & rol id
+    var x = 0, y = 0;
+    while ((getiSeq(rn) + x + y) % 2 != e0 % 2 ) {
+      h = []; // tmp array for checking existence
+      //console.log(getiSeq(rn));
+      for (i = 0; i < element; i++) {
+        n = genRandomNum();
+        console.log(h.toString());
+        while (h[n]) {
+          n = genRandomNum();
+        }
+        h[n] = 1; rn[i] = n;
+        if (n == designated) {
+          y = parseInt(i / bound);
+          x = i - y * bound;
+        }
       }
     }
   }
@@ -87,6 +101,7 @@ window.onload = function() {
   t.innerHTML = "<h1 id='msg' style='color: rgb(250,248,239); padding-top: 25%'></h1>";
   $("#all").append(t);
   $("#loading").remove();
+  $("#totalF").html(element);
   setTimeout(preStart, 4000);
   tid = setInterval(timer, 1000);
 };
@@ -108,19 +123,25 @@ document.body.onkeyup = function(e) {
 
 function preStart() {
   $("#win").css("opacity", 0);
-  setTimeout(function() { $("#win").css("z-index", "25"); $("#msg").html("Hurry!"); }, 4000);
+  setTimeout(function() { $("#win").css("z-index", "25"); $("#msg").html("Hurry!"); fullInited = true; }, 4000);
   initBlocks();
+  if (localStorage.step) {
+    step = localStorage.step;
+    $("#stepCounter").html(step + ((localStorage.bestStep) ? ("/" + localStorage.bestStep) : ""));
+  }
 }
 
 function timer() {
   if (!gaming) {
     if (time == 0) {
-      $("#msg").html("Start!");
-      gaming = true; return 0;
+      $("#msg").html((localStorage.gaming) ? "Resumed" : "Start!");
+      localStorage.gaming = gaming = true; return 0;
     }
     $("#msg").html(time--);
   } else {
-    $("#timeCounter").html(time++);
+    if (localStorage.time) time = localStorage.time;
+    $("#timeCounter").html(time++ + ((localStorage.bestTime) ? ("/" + localStorage.bestTime) : ""));
+    localStorage.time = time;
   }
 }
 
@@ -128,10 +149,15 @@ function initBlocks() {
     for (i = 0; i < element; i++) {
       // i: ith img num  n: random number (nth image piece)
       n = rn[i];
-      if (designated == n) {
-        a[getY(i)][getX(i)] = "";
-        continue;
+      y = getY(i); x = getX(i);
+      if (!localStorage.a) {
+        if (designated == n) {
+          a[getY(i)][getX(i)] = "";
+          continue;
+        }
+        a[y][x] = n + 1;
       }
+      if (designated == n) continue;
       t = document.createElement("div");
       t.id = "b" + (n + 1);
       t.className = "block";
@@ -141,9 +167,7 @@ function initBlocks() {
       t.style.width = t.style.height = perWH + "px";
       t.style.backgroundSize = bound + "00%";
       t.style.backgroundColor = "rgb(" + genRandomColor() + ", " + genRandomColor() + ", " + genRandomColor() + ")";
-      y = getY(i); x = getX(i);
       t.y = y; t.x = x;
-      a[y][x] = n + 1;
       // console.log("i = " + i + ", x = " + x + ", y = " + y);
       t.style.left = getLeft(x) + "px";
       t.style.top =  getTop(y) + "px";
@@ -243,6 +267,8 @@ function succeed() {
 }
 
 function move(what) {
+  console.log(new Date().getTime() - lastmove);
+  if (new Date().getTime() - lastmove < 50) return; // touch screen temporarily solution
   if (what.id) { // not a event..
     y = what.y; x = what.x;
   } else {
@@ -273,14 +299,21 @@ function move(what) {
   } else {
     this.y = res[0]; this.x = res[1];
   }
+  lastmove = new Date().getTime();
   printA();
-
+  $("#stepCounter").html(++step + ((localStorage.bestStep) ? ("/" + localStorage.bestStep) : ""));
+  localStorage.step = step;
+  localStorage.a = JSON.stringify(a); // localStorage can only storage string...
+  localStorage.img = img;
   // if succeed
   if (succeed()) {
     $(".block").css("opacity", 0);
     $("#win").css("z-index", "200").css("opacity", 1);
     window.clearInterval(tid);
     $("#msg").html("You Win!");
+    if (!localStorage.bestStep || localStorage.bestStep > step) localStorage.bestStep = step;
+    if (!localStorage.bestTime || localStorage.bestTime > time) localStorage.bestTime = time;
+    reset();
   }
 }
 
@@ -312,11 +345,40 @@ function showOrig() {
   }, 4000);
 }
 
-function restart() {
-  if (confirm("Are you sure to restart?")) {
-    gaming = false; blockInited = false; time = 3;
-    $(".block").remove(); $("#win").remove();
+function restart(val) {
+  if (confirm("Are you sure to restart with " + (bound - (-val)) + "x" + (bound - (-val)) + " fragments?")) {
+    if (val) {
+      bound -= -val; // + is awful
+      localStorage.bound = bound;
+    }
+    gaming = false; blockInited = false; fullInited = false; time = 3;
+    $("#all").html('<p id="loading">Initializing...</p>'); $("#win").remove(); reset();
     window.clearInterval(tid);
     window.onload();
   }
+}
+
+function reset() {
+  toRemove = ["gaming", "a", "img", "time", "step"];
+  for (i = 0; i < toRemove.length; i++) {
+    localStorage.removeItem(toRemove[i]);
+  }
+}
+
+function changeD(val) {
+  if (val < 0) {
+    if (bound <= 2) {
+      alert("Are you serious?"); return;
+    }
+  } else {
+    if (bound >= 10) {
+      alert("You will suffer from being hanged..."); return;
+    }
+  }
+  restart(val);
+}
+
+function clearRec() {
+  if (!confirm("Are you sure to clear the best record?")) return;
+  localStorage.removeItem("bestTime"); localStorage.removeItem("bestStep");
 }

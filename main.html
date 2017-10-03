@@ -9,16 +9,19 @@
   <body scroll="no">
     <div id='fuckclass' class="game"></div>
     <h1>zJigsaw</h1>
-    <h5>Move the fragment to get a complete image!</h5>
+    <h5>Move <span id="totalF">the</span> fragments to get a complete image!</h5>
     <br>
     <div id='all'>
       <p id="loading">Initializing...</p>
     </div>
-    <h4>Time spent : <span id="timeCounter">0</span>s</h4>
+    <h4>Time spent : <span id="timeCounter">0</span>s&emsp;|&emsp;Steps gone : <span id="stepCounter">0</span></h4>
     <div>
-      <div id='hint' class="button inline" onclick='showHint();'>&nbsp;Hint&nbsp;</div>
-      <div id='answer' class="button inline" onclick='showOrig();'>&nbsp;Original&nbsp;</div>
-      <div id='restart' class="button inline" onclick='restart()'>&nbsp;Retry&nbsp;</div>
+      <div id='decrease' class="button inline" onclick='fullInited && changeD(-1);'>&nbsp;&lt;&lt;&lt;&nbsp;</div>
+      <div id='hint' class="button inline" onclick='fullInited && showHint();'>&nbsp;Hint&nbsp;</div>
+      <div id='answer' class="button inline" onclick='fullInited && showOrig();'>&nbsp;Original&nbsp;</div>
+      <div id='restart' class="button inline" onclick='fullInited && restart();'>&nbsp;Retry&nbsp;</div>
+      <div id='clearRec' class="button inline" onclick='fullInited && clearRec();'>&nbsp;Clear&nbsp;</div>
+      <div id='increase' class="button inline" onclick='fullInited && changeD(+1);'>&nbsp;&gt;&gt;&gt;&nbsp;</div>
     </div>
   </body>
 
