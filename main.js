@@ -5,10 +5,12 @@ a = [];
 imgs = ["1.jpg", "2.jpg", "3.jpg", "4.jpg", "5.jpg", "6.jpg", "7.jpg", "8.jpg", "9.jpg"];
 perWH = 0; blockInited = false; gaming = false;
 tid = 0; time = 3;
+sch = scw = osch = oscw = 0;
 
 window.onresize = function() {
-  sch = document.body.clientHeight;
-  scw = document.body.clientWidth;
+  if (sch == osch && scw == oscw && oscw != 0) return;
+  osch = sch; sch = document.body.clientHeight;
+  oscw = scw; scw = document.body.clientWidth;
   if (scw <= 400) {
     $("#all").css("height", "").css("width", "90vw");
     // $("#all").css("left", "5%").css("right", "5%").css("width", "90vw");
@@ -54,9 +56,16 @@ window.onload = function() {
   }
   // generate random nums
   rn = []; // array for random nums
-  while (getiSeq(rn) % 2 != 0) {
+  /*
+    设两个矩阵A和B。将矩阵从左到右，从上到下排成一个一维数组，设其逆序对的个数加上空白格在原矩阵所在的行列号之和P。
+    若P(A)与P(B)的奇偶性相同，则两个矩阵可以通过拼图游戏进行转换。因此只要计算当前矩阵和正确矩阵的P值判断一下即可。
+    --- from `http://blog.csdn.net/realmagician/article/details/17395035`
+  */
+  e0 = (bound - 1) * 2; // the designated element's col & rol id
+  var x = 0, y = 0;
+  while ((getiSeq(rn) + x + y) % 2 != e0 % 2 ) {
     h = []; // tmp array for checking existence
-    console.log(getiSeq(rn));
+    //console.log(getiSeq(rn));
     for (i = 0; i < element; i++) {
       n = genRandomNum();
       console.log(h.toString());
@@ -64,6 +73,10 @@ window.onload = function() {
         n = genRandomNum();
       }
       h[n] = 1; rn[i] = n;
+      if (n == designated) {
+        y = parseInt(i / bound);
+        x = i - y * bound;
+      }
     }
   }
   // create win tip
