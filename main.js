@@ -133,10 +133,8 @@ function preStart() {
   $("#win").css("opacity", 0);
   setTimeout(function() { $("#win").css("z-index", "25"); $("#msg").html("Hurry!"); fullInited = true; }, 4000);
   initBlocks();
-  if (localStorage.step) {
-    step = localStorage.step;
-    $("#stepCounter").html(step + ((localStorage.bestStep) ? ("/" + localStorage.bestStep) : ""));
-  }
+  if (localStorage.step) step = localStorage.step;
+  $("#stepCounter").html(step + ((localStorage.bestStep) ? ("/" + localStorage.bestStep) : ""));
 }
 
 function timer() {
