@@ -1,12 +1,21 @@
-* {
-  transition: all 0.2s;
+html {
+  background-color: rgba(250,248,239,100);
 }
 
 body {
   text-align: center;
-  background-color: rgb(250,248,239);
-  font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+  background-color: inherit;
+  /* font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif; */
   overflow: hidden;
+  /*height: 100%;
+  width: 100%;
+  position: fixed;*/
+}
+
+body.* {
+  transition-property: opacity, width, height, left, right, top, bottom, font-size;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
 }
 
 center {
@@ -55,6 +64,9 @@ h5 {
 }
 
 .block {
+  transition-property: opacity, width, height, left, right, top, bottom;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
   border-radius: 6px;
   background-repeat: no-repeat;
   /* background-size: cover; */
@@ -63,14 +75,15 @@ h5 {
 }
 
 .nums {
-  transition: opacity 3s;
+  transition: opacity 3s ease-in-out;
   display: table-cell;
   vertical-align: middle;
   background-color: inherit;
+  text-shadow: 1px 1px black, -1px -1px black, 1px -1px black, -1px 1px black;
 }
 
 #win {
-  transition: opacity 4s;
+  transition: opacity 4s ease-in-out;
   border-radius: 6px;
   background-repeat: no-repeat;
   background-size: cover;

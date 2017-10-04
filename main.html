@@ -8,13 +8,13 @@
 
   <body scroll="no">
     <div id='fuckclass' class="game"></div>
-    <h1>zJigsaw</h1>
+    <h1 onclick='toggleFull();'>zJigsaw</h1>
     <h5>Move <span id="totalF">the</span> fragments to get a complete image!</h5>
     <br>
     <div id='all'>
       <p id="loading">Initializing...</p>
     </div>
-    <h4>Time spent : <span id="timeCounter">0</span>s&emsp;|&emsp;Steps gone : <span id="stepCounter">0</span></h4>
+    <h4>Time spent : <span id="timeCounter">0</span>s&nbsp;&nbsp;&nbsp;Steps gone : <span id="stepCounter">0</span></h4>
     <div>
       <div id='decrease' class="button inline" onclick='fullInited && changeD(-1);'>&nbsp;&lt;&lt;&lt;&nbsp;</div>
       <div id='hint' class="button inline" onclick='fullInited && showHint();'>&nbsp;Hint&nbsp;</div>
