@@ -8,9 +8,15 @@ tid = 0; time = 3; step = 0;
 sch = scw = 0;
 lastmove = 0;
 
+function toggleFull() {
+  if (document.webkitIsFullScreen) document.webkitExitFullscreen();
+  else document.body.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+}
+
 window.onresize = function() {
   sch = document.body.clientHeight;
   scw = document.body.clientWidth;
+  //$("html, body").css("height", sch).css("width", scw);
   if (scw <= 400) {
     $("#all").css("height", "").css("width", "90vw");
     // $("#all").css("left", "5%").css("right", "5%").css("width", "90vw");
@@ -45,6 +51,8 @@ window.onresize = function() {
 };
 
 window.onload = function() {
+  //window.scrollTo(0, 1);
+  $(document).bind('touchmove', function(e) { e.preventDefault(); }); // disable safari scroll bounce
   if (localStorage.bound) bound = localStorage.bound - 0;
   element = bound * bound; designated = element - 1;
   window.onresize();
@@ -101,7 +109,7 @@ window.onload = function() {
   t.innerHTML = "<h1 id='msg' style='color: rgb(250,248,239); padding-top: 25%'></h1>";
   $("#all").append(t);
   $("#loading").remove();
-  $("#totalF").html(element);
+  $("#totalF").html(element - 1);
   setTimeout(preStart, 4000);
   tid = setInterval(timer, 1000);
 };
@@ -125,10 +133,8 @@ function preStart() {
   $("#win").css("opacity", 0);
   setTimeout(function() { $("#win").css("z-index", "25"); $("#msg").html("Hurry!"); fullInited = true; }, 4000);
   initBlocks();
-  if (localStorage.step) {
-    step = localStorage.step;
-    $("#stepCounter").html(step + ((localStorage.bestStep) ? ("/" + localStorage.bestStep) : ""));
-  }
+  if (localStorage.step) step = localStorage.step;
+  $("#stepCounter").html(step + ((localStorage.bestStep) ? ("/" + localStorage.bestStep) : ""));
 }
 
 function timer() {
@@ -346,12 +352,12 @@ function showOrig() {
 }
 
 function restart(val) {
-  if (confirm("Are you sure to restart with " + (bound - (-val)) + "x" + (bound - (-val)) + " fragments?")) {
+  if (confirm("Are you sure to restart with " + (bound - (-val)) + "x" + (bound - (-val)) + " size?")) {
     if (val) {
       bound -= -val; // + is awful
       localStorage.bound = bound;
     }
-    gaming = false; blockInited = false; fullInited = false; time = 3;
+    gaming = false; blockInited = false; fullInited = false; time = 3; step = 0;
     $("#all").html('<p id="loading">Initializing...</p>'); $("#win").remove(); reset();
     window.clearInterval(tid);
     window.onload();
